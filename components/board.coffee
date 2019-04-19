@@ -5,16 +5,14 @@ import Cell from './cell'
 export default class Board extends Component
   constructor: (props) ->
     super(props)
-    @state = distributed: false, bombLocations: [], dead: false
+    @state = distributed: false, bombLocations: [], dead: false, opened: []
 
-  componentDidMount: ->
-    @distribute()
-
-  distribute: ->
+  distribute: (row, column) ->
     {rows, columns, bombs} = @props
     all = [0...rows]
       .map (row) -> [0...columns].map (column) -> [row, column]
       .flat()
+      .filter (item) -> item[0] != row || item[1] != column
 
     bombLocations = []
 
@@ -45,6 +43,14 @@ export default class Board extends Component
           .map (column) -> [row, column]
       .flat()
 
+  handleOpen: (row, column, neighbors) =>
+    @setState (state) ->
+      opened = state.opened.slice(0)
+      opened.push [row, column]
+      {opened}
+    @distribute(row, column) unless @state.distributed
+    # surrounding = @surrounding(row, column)
+
   handleDeath: =>
     @setState dead: true
     # TODO: call parent's onDie
@@ -52,13 +58,15 @@ export default class Board extends Component
 
   render: ->
     {rows, columns} = @props
-    {dead} = @state
+    {dead, opened} = @state
+
+    # console.log opened
 
     <div id="board">
       {[0...rows].map (row) =>
         <div key={row}>
           {[0...columns].map (column) =>
-            <Cell key={"#{row},#{column}"} row={row} column={column} bomb={@bomb(row, column)} dead={dead} neighbors={@neighbors(row, column)} onDeath={@handleDeath} />
+            <Cell key={column} row={row} column={column} bomb={@bomb(row, column)} dead={dead} neighbors={@neighbors(row, column)} onOpen={@handleOpen} onDeath={@handleDeath} />
           }
         </div>
       }
