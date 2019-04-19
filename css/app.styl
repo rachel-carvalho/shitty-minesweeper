@@ -10,11 +10,16 @@ body
   padding: 10px
   text-align: center
 
+  > *
+    margin: 0 10px
+    vertical-align: middle
+
   time, span
     font-family: monospace
 
-  span
-    margin: 0 10px
+  button
+    padding: 0.25em
+    font-size: 32px
 
 #board
   button
@@ -22,6 +27,7 @@ body
     height: @width
     vertical-align: top
     position: relative
+    padding: 0
 
     &.open
       border: 0

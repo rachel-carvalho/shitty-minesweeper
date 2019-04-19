@@ -22,16 +22,22 @@ export default class Toolbar extends Component
     @props.onRestart()
 
   render: ->
-    {bombs, foundBombs, flagging, onFlagToggle} = @props
+    {bombs, foundBombs, flagging, dead, won, onFlagToggle} = @props
     {elapsed} = @state
 
     remaining = bombs - foundBombs
 
     <div id="toolbar">
-      <time>{elapsed.toString().padStart(3, 0)}</time>
       <span>{remaining}</span>
-      <button onClick={@handleRestart}>Restart</button>
-      <button onClick={onFlagToggle}>
-        {if flagging then 'Bomb' else 'Flag'}
+      <button onClick={@handleRestart}>
+        {if dead
+          '😵'
+        else if won
+          '😎'
+        else
+          '🙂'
+        }
       </button>
+      <button onClick={onFlagToggle}>{if flagging then '💣' else '🚩'}</button>
+      <time>{elapsed.toString().padStart(3, 0)}</time>
     </div>

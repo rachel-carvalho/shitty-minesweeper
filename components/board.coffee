@@ -9,6 +9,7 @@ export default class Board extends Component
     @initialState = distributed: false, bombLocations: [], dead: false, opened: [], flagged: [], game: ''
     @state = @initialState
     @recentlyOpened = []
+    @couldHaveWon = false
 
   componentDidUpdate: (prevProps) =>
     return @reset() if prevProps.started && !@props.started
@@ -19,10 +20,12 @@ export default class Board extends Component
       return @handleOpen(row, column)
 
     @cascadeOpening()
+    @checkIfWon()
 
   reset: ->
     @recentlyOpened = []
     @firstOpening = null
+    @couldHaveWon = false
     @setState @initialState
 
   distribute: (row, column) ->
@@ -95,6 +98,7 @@ export default class Board extends Component
       if added
         flagged.push [row, column]
         onFlagAdded()
+        @couldHaveWon = true
       else
         flagged = flagged.filter (item) -> item[0] != row || item[1] != column
         onFlagRemoved()
@@ -119,6 +123,14 @@ export default class Board extends Component
       unflagged.forEach (item) =>
         return @handleDeath() if @bomb(...item)
         @handleOpen(...item)
+        @couldHaveWon = true
+
+  checkIfWon: ->
+    return if @props.won || !@couldHaveWon
+    flaggedAll = @state.flagged.length == @props.bombs
+    openedAll = @state.opened.length == (@props.rows * @props.columns) - @props.bombs
+    if flaggedAll && openedAll
+      @props.onWin()
 
   render: ->
     {rows, columns, flagging} = @props
