@@ -97,7 +97,9 @@ export default class Board extends Component
     unflagged = surrounding.filter (item) => !@flagged(...item)
 
     if unflagged.length == (surrounding.length - neighbors)
-      unflagged.forEach (item) => @handleOpen(...item)
+      unflagged.forEach (item) =>
+        return @handleDeath() if @bomb(...item)
+        @handleOpen(...item)
 
   render: ->
     {rows, columns, flagging} = @props
