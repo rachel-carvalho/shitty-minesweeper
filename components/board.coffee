@@ -30,6 +30,21 @@ export default class Board extends Component
     {bombLocations} = @state
     bombLocations.some (bomb) -> bomb[0] == row && bomb[1] == column
 
+  neighbors: (row, column) ->
+    return if @bomb(row, column)
+    @surrounding(row, column)
+      .filter (item) => @bomb(...item)
+      .length
+
+  surrounding: (row, column) ->
+    [(row - 1)..(row + 1)]
+      .filter (row) -> row >= 0
+      .map (row) ->
+        [(column - 1)..(column + 1)]
+          .filter (column) -> column >= 0
+          .map (column) -> [row, column]
+      .flat()
+
   render: ->
     {rows, columns} = @props
 
@@ -37,7 +52,7 @@ export default class Board extends Component
       {[0...rows].map (row) =>
         <div key={row}>
           {[0...columns].map (column) =>
-            <Cell key={"#{row},#{column}"} row={row} column={column} bomb={@bomb(row, column)} />
+            <Cell key={"#{row},#{column}"} row={row} column={column} bomb={@bomb(row, column)} neighbors={@neighbors(row, column)} />
           }
         </div>
       }
