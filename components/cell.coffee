@@ -48,8 +48,10 @@ export default class Cell extends Component
     classes = []
     classes.push 'open' if (open || exploded || (dead && bomb && !flagged))
     classes.push 'wrong-flag' if dead && flagged && !bomb
+    classes.push 'neighbor' if neighbors
+    classes.push "neighbor-#{neighbors}" if neighbors
 
-    <button onClick={@handleClick} className={classes}>
+    <button onClick={@handleClick} className={classes.join ' '}>
       {neighbors if open && neighbors}
       {'💣' if (open || dead) && bomb && !exploded && !flagged}
       {'🚩' if flagged}
