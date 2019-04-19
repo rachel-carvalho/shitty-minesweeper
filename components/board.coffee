@@ -36,11 +36,12 @@ export default class Board extends Component
       .length
 
   surrounding: (row, column) ->
+    {rows, columns} = @props
     [(row - 1)..(row + 1)]
-      .filter (row) -> row >= 0
+      .filter (row) -> row >= 0 && row < rows
       .map (row) ->
         [(column - 1)..(column + 1)]
-          .filter (column) -> column >= 0
+          .filter (column) -> column >= 0 && column < columns
           .map (column) -> [row, column]
       .flat()
 
