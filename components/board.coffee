@@ -5,7 +5,7 @@ import Cell from './cell'
 export default class Board extends Component
   constructor: (props) ->
     super(props)
-    @state = distributed: false, bombLocations: [], dead: false, opened: []
+    @state = distributed: false, bombLocations: [], dead: false, opened: [], flagged: []
     @recentlyOpened = []
 
   distribute: (row, column) ->
@@ -75,6 +75,12 @@ export default class Board extends Component
 
     @cascadeOpening()
 
+  handleFlag: (row, column) =>
+    @setState (state) ->
+      {flagged} = state
+      flagged.push [row, column]
+      {flagged}
+
   handleDeath: =>
     @setState dead: true
     # TODO: call parent's onDie
@@ -84,14 +90,16 @@ export default class Board extends Component
     @state.opened.some (item) -> item[0] == row && item[1] == column
 
   render: ->
-    {rows, columns} = @props
+    {rows, columns, flagging} = @props
     {dead} = @state
 
     <div id="board">
       {[0...rows].map (row) =>
         <div key={row}>
           {[0...columns].map (column) =>
-            <Cell key={column} row={row} column={column} bomb={@bomb(row, column)} opened={@opened(row, column)} dead={dead} neighbors={@neighbors(row, column)} onOpen={@handleOpen} onDeath={@handleDeath} />
+            <Cell key={column} row={row} column={column} flagging={flagging} bomb={@bomb(row, column)}
+              opened={@opened(row, column)} dead={dead} neighbors={@neighbors(row, column)}
+              onFlag={@handleFlag} onOpen={@handleOpen} onDeath={@handleDeath} />
           }
         </div>
       }
