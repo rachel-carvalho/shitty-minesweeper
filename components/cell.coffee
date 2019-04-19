@@ -21,8 +21,10 @@ export default class Cell extends Component
 
   flag: ->
     {row, column, onFlag} = @props
-    @setState flagged: true
-    onFlag(row, column)
+    @setState (state) ->
+      flagged = !state.flagged
+      onFlag(row, column, flagged)
+      {flagged}
 
   open: ->
     {row, column, bomb, onDeath, onOpen} = @props

@@ -75,12 +75,18 @@ export default class Board extends Component
 
     @cascadeOpening()
 
-  handleFlag: (row, column) =>
-    {onFlagAdded} = @props
+  handleFlag: (row, column, added) =>
+    {onFlagAdded, onFlagRemoved} = @props
     @setState (state) ->
       {flagged} = state
-      flagged.push [row, column]
-      onFlagAdded()
+
+      if added
+        flagged.push [row, column]
+        onFlagAdded()
+      else
+        flagged = flagged.filter (item) -> item[0] != row || item[1] != column
+        onFlagRemoved()
+
       {flagged}
 
   handleDeath: =>

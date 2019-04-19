@@ -25,7 +25,7 @@ export default class Home extends Component
     @setState (state) ->
       foundBombs: state.foundBombs - 1
 
-  handleDeath: ->
+  handleDeath: =>
     @setState dead: true
 
   render: ->
