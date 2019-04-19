@@ -13,7 +13,8 @@ export default class Toolbar extends Component
 
   calculateTime: =>
     return @setState elapsed: 0 unless @props.startedAt
-    ms = new Date() - @props.startedAt
+    end = @props.endedAt || new Date()
+    ms = end - @props.startedAt
     @setState elapsed: Math.round(ms / 1000)
 
   handleRestart: =>
