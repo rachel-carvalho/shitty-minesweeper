@@ -9,15 +9,21 @@ export default class Home extends Component
 
   constructor: ->
     super()
-    @state = started: false, flagging: false
+    @state = started: false, flagging: false, foundBombs: 0
+
+  handleRestart: =>
+    @setState started: false, foundBombs: 0
 
   handleFlagToggle: =>
     @setState (state) -> flagging: !state.flagging
 
   render: ->
-    {started, flagging} = @state
+    {started, flagging, foundBombs} = @state
+    rows = 15
+    columns = 10
+    bombs = 28
 
     <Fragment>
-      <Toolbar started={started} flagging={flagging} onFlagToggle={@handleFlagToggle} />
-      <Board />
+      <Toolbar bombs={bombs} foundBombs={foundBombs} started={started} flagging={flagging} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
+      <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} />
     </Fragment>
