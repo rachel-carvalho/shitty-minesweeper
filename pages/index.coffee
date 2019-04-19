@@ -25,5 +25,5 @@ export default class Home extends Component
 
     <Fragment>
       <Toolbar bombs={bombs} foundBombs={foundBombs} started={started} flagging={flagging} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
-      <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} />
+      <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} />
     </Fragment>
