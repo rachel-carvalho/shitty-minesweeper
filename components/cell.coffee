@@ -6,15 +6,29 @@ export default class Cell extends Component
     @state = open: false, flagged: false
 
   handleClick: =>
-    {row, column, flagging, bomb, onOpen, onFlag, onDeath} = @props
-    if flagging
-      return if @state.open || @props.opened
-      @setState flagged: true
-      onFlag(row, column)
-    else
-      @setState open: true
-      return onDeath(row, column) if bomb
-      onOpen(row, column)
+    {dead, opened, flagging} = @props
+    return if dead
+
+    open = opened || @state.open
+
+    return @expand() if open
+    return @flag() if flagging
+    @open()
+
+  expand: ->
+    {row, column, neighbors, onExpand} = @props
+    onExpand(row, column, neighbors)
+
+  flag: ->
+    {row, column, onFlag} = @props
+    @setState flagged: true
+    onFlag(row, column)
+
+  open: ->
+    {row, column, bomb, onDeath, onOpen} = @props
+    @setState open: true
+    return onDeath(row, column) if bomb
+    onOpen(row, column)
 
   render: ->
     {row, column, bomb, neighbors, dead, opened} = @props

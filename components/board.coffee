@@ -89,6 +89,16 @@ export default class Board extends Component
   opened: (row, column) ->
     @state.opened.some (item) -> item[0] == row && item[1] == column
 
+  flagged: (row, column) ->
+    @state.flagged.some (item) -> item[0] == row && item[1] == column
+
+  handleExpand: (row, column, neighbors) =>
+    surrounding = @surrounding(row, column)
+    unflagged = surrounding.filter (item) => !@flagged(...item)
+
+    if unflagged.length == (surrounding.length - neighbors)
+      unflagged.forEach (item) => @handleOpen(...item)
+
   render: ->
     {rows, columns, flagging} = @props
     {dead} = @state
@@ -99,7 +109,7 @@ export default class Board extends Component
           {[0...columns].map (column) =>
             <Cell key={column} row={row} column={column} flagging={flagging} bomb={@bomb(row, column)}
               opened={@opened(row, column)} dead={dead} neighbors={@neighbors(row, column)}
-              onFlag={@handleFlag} onOpen={@handleOpen} onDeath={@handleDeath} />
+              onFlag={@handleFlag} onOpen={@handleOpen} onExpand={@handleExpand} onDeath={@handleDeath} />
           }
         </div>
       }
