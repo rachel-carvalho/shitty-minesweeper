@@ -32,12 +32,12 @@ export default class Home extends Component
     @setState dead: true
 
   render: ->
-    {started, flagging, foundBombs} = @state
+    {started, startedAt, flagging, foundBombs} = @state
     rows = 15
     columns = 10
     bombs = 28
 
     <Fragment>
-      <Toolbar bombs={bombs} foundBombs={foundBombs} started={started} flagging={flagging} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
+      <Toolbar bombs={bombs} foundBombs={foundBombs} startedAt={startedAt} flagging={flagging} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
       <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} onFlagAdded={@handleFlagAdded} onStart={@handleStart} onFlagRemoved={@handleFlagRemoved} onDeath={@handleDeath} />
     </Fragment>
