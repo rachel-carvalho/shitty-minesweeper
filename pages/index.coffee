@@ -9,10 +9,13 @@ export default class Home extends Component
 
   constructor: ->
     super()
-    @state = started: false, flagging: false, foundBombs: 0, dead: false
+    @state = started: false, flagging: false, foundBombs: 0, dead: false, startedAt: null
 
   handleRestart: =>
-    @setState started: false, foundBombs: 0
+    @setState started: false, foundBombs: 0, startedAt: null
+
+  handleStart: (startedAt) =>
+    @setState {started: true, startedAt}
 
   handleFlagToggle: =>
     @setState (state) -> flagging: !state.flagging
@@ -36,5 +39,5 @@ export default class Home extends Component
 
     <Fragment>
       <Toolbar bombs={bombs} foundBombs={foundBombs} started={started} flagging={flagging} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
-      <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} onFlagAdded={@handleFlagAdded} onFlagRemoved={@handleFlagRemoved} onDeath={@handleDeath} />
+      <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} onFlagAdded={@handleFlagAdded} onStart={@handleStart} onFlagRemoved={@handleFlagRemoved} onDeath={@handleDeath} />
     </Fragment>

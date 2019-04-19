@@ -5,6 +5,10 @@ export default class Cell extends Component
     super(props)
     @state = open: false, flagged: false
 
+  componentDidUpdate: (prevProps) =>
+    return if prevProps.game == @props.game
+    @setState open: false, flagged: false
+
   handleClick: =>
     {dead, opened, flagging} = @props
     return if dead

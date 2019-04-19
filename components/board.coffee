@@ -5,8 +5,25 @@ import Cell from './cell'
 export default class Board extends Component
   constructor: (props) ->
     super(props)
-    @state = distributed: false, bombLocations: [], dead: false, opened: [], flagged: []
+
+    @initialState = distributed: false, bombLocations: [], dead: false, opened: [], flagged: [], game: ''
+    @state = @initialState
     @recentlyOpened = []
+
+  componentDidUpdate: (prevProps) =>
+    return @reset() if prevProps.started && !@props.started
+
+    if @firstOpening
+      [row, column] = @firstOpening
+      @firstOpening = null
+      return @handleOpen(row, column)
+
+    @cascadeOpening()
+
+  reset: ->
+    @recentlyOpened = []
+    @firstOpening = null
+    @setState @initialState
 
   distribute: (row, column) ->
     {rows, columns, bombs} = @props
@@ -23,7 +40,10 @@ export default class Board extends Component
 
     bombLocations.sort (a, b) -> "#{a[0]}, #{a[1]}" - "#{b[0]}, #{b[1]}"
 
-    @setState {distributed: true, bombLocations}
+    game = new Date()
+
+    @setState {distributed: true, game, bombLocations}
+    @props.onStart(game)
 
   bomb: (row, column) ->
     {bombLocations} = @state
@@ -67,14 +87,6 @@ export default class Board extends Component
         surrounding = @surrounding(row, column)
         surrounding.forEach (item) => @handleOpen(...item)
 
-  componentDidUpdate: =>
-    if @firstOpening
-      [row, column] = @firstOpening
-      @firstOpening = null
-      return @handleOpen(row, column)
-
-    @cascadeOpening()
-
   handleFlag: (row, column, added) =>
     {onFlagAdded, onFlagRemoved} = @props
     @setState (state) ->
@@ -110,14 +122,14 @@ export default class Board extends Component
 
   render: ->
     {rows, columns, flagging} = @props
-    {dead} = @state
+    {dead, game} = @state
 
     <div id="board">
       {[0...rows].map (row) =>
         <div key={row}>
           {[0...columns].map (column) =>
             <Cell key={column} row={row} column={column} flagging={flagging} bomb={@bomb(row, column)}
-              opened={@opened(row, column)} dead={dead} neighbors={@neighbors(row, column)}
+              opened={@opened(row, column)} dead={dead} neighbors={@neighbors(row, column)} game={game}
               onFlag={@handleFlag} onOpen={@handleOpen} onExpand={@handleExpand} onDeath={@handleDeath} />
           }
         </div>
