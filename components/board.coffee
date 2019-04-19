@@ -45,7 +45,9 @@ export default class Board extends Component
       .flat()
 
   handleOpen: (row, column) =>
-    @distribute(row, column) unless @state.distributed
+    unless @state.distributed
+      @distribute(row, column)
+      return @firstOpening = [row, column]
 
     @setState (state) =>
       return if state.opened.some (item) -> item[0] == row && item[1] == column
@@ -65,6 +67,11 @@ export default class Board extends Component
         surrounding.forEach (item) => @handleOpen(...item)
 
   componentDidUpdate: =>
+    if @firstOpening
+      [row, column] = @firstOpening
+      @firstOpening = null
+      return @handleOpen(row, column)
+
     @cascadeOpening()
 
   handleDeath: =>
