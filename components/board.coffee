@@ -5,7 +5,7 @@ import Cell from './cell'
 export default class Board extends Component
   constructor: (props) ->
     super(props)
-    @state = distributed: false, bombLocations: []
+    @state = distributed: false, bombLocations: [], dead: false
 
   componentDidMount: ->
     @distribute()
@@ -45,14 +45,20 @@ export default class Board extends Component
           .map (column) -> [row, column]
       .flat()
 
+  handleDeath: =>
+    @setState dead: true
+    # TODO: call parent's onDie
+    console.log 'ded'
+
   render: ->
     {rows, columns} = @props
+    {dead} = @state
 
     <div id="board">
       {[0...rows].map (row) =>
         <div key={row}>
           {[0...columns].map (column) =>
-            <Cell key={"#{row},#{column}"} row={row} column={column} bomb={@bomb(row, column)} neighbors={@neighbors(row, column)} />
+            <Cell key={"#{row},#{column}"} row={row} column={column} bomb={@bomb(row, column)} dead={dead} neighbors={@neighbors(row, column)} onDeath={@handleDeath} />
           }
         </div>
       }
