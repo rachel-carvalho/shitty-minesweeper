@@ -76,15 +76,16 @@ export default class Board extends Component
     @cascadeOpening()
 
   handleFlag: (row, column) =>
+    {onFlagAdded} = @props
     @setState (state) ->
       {flagged} = state
       flagged.push [row, column]
+      onFlagAdded()
       {flagged}
 
   handleDeath: =>
     @setState dead: true
-    # TODO: call parent's onDie
-    console.log 'ded'
+    @props.onDeath()
 
   opened: (row, column) ->
     @state.opened.some (item) -> item[0] == row && item[1] == column
