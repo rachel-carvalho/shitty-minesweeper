@@ -38,6 +38,7 @@ export default class Cell extends Component
 
     classes = []
     classes.push 'open' if (open || (dead && bomb))
+    classes.push 'wrong-flag' if dead && flagged && !bomb
 
     <button onClick={@handleClick} className={classes}>
       {neighbors if open && neighbors}

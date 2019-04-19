@@ -1,3 +1,5 @@
+$bomb-size = 30px
+
 body
   font-family: sans-serif
   line-height: 1
@@ -10,9 +12,21 @@ body
 
 #board
   button
-    width: 30px
+    width: $bomb-size
     height: @width
     vertical-align: top
+    position: relative
 
     &.open
       border: 0
+
+    &.wrong-flag
+      &::before
+        content: '❌'
+        position: absolute
+        font-size: $bomb-size
+        line-height: 1
+        width: @font-size
+        height: @width
+        left: 0
+        top: 0
