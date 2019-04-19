@@ -6,6 +6,7 @@ export default class Board extends Component
   constructor: (props) ->
     super(props)
     @state = distributed: false, bombLocations: [], dead: false, opened: []
+    @recentlyOpened = []
 
   distribute: (row, column) ->
     {rows, columns, bombs} = @props
@@ -22,16 +23,16 @@ export default class Board extends Component
 
     bombLocations.sort (a, b) -> "#{a[0]}, #{a[1]}" - "#{b[0]}, #{b[1]}"
 
-    bombLocations
+    @setState {distributed: true, bombLocations}
 
-  bomb: (row, column, state) ->
-    {bombLocations} = (state || @state)
+  bomb: (row, column) ->
+    {bombLocations} = @state
     bombLocations.some (bomb) -> bomb[0] == row && bomb[1] == column
 
-  neighbors: (row, column, state) ->
-    return if @bomb(row, column, state)
+  neighbors: (row, column) ->
+    return if @bomb(row, column)
     @surrounding(row, column)
-      .filter (item) => @bomb(...item, state)
+      .filter (item) => @bomb(...item)
       .length
 
   surrounding: (row, column) ->
@@ -44,38 +45,45 @@ export default class Board extends Component
       .flat()
 
   handleOpen: (row, column) =>
-    @setState (state) =>
-      newState = {}
-      newState.opened = @openAll([[row, column]], state)
-      unless state.distributed
-        newState.bombLocations = @distribute(row, column)
-        newState.distributed = true
-      surrounding = @surrounding(row, column)
-      neighbors = @neighbors(row, column, newState)
-      newState.opened = @openAll(surrounding, newState) unless neighbors
-      newState
+    @distribute(row, column) unless @state.distributed
 
-  openAll: (items, state) ->
-    opened = state.opened.slice(0)
-    items.forEach (item) -> opened.push item
-    opened
+    @setState (state) =>
+      return if state.opened.some (item) -> item[0] == row && item[1] == column
+      opened = state.opened.slice(0)
+      opened.push [row, column]
+      @recentlyOpened.push [row, column]
+      {opened}
+
+  cascadeOpening: ->
+    while item = @recentlyOpened.shift()
+      break unless item
+      [row, column] = item
+
+      neighbors = @neighbors(row, column)
+      unless neighbors
+        surrounding = @surrounding(row, column)
+        surrounding.forEach (item) => @handleOpen(...item)
+
+  componentDidUpdate: =>
+    @cascadeOpening()
 
   handleDeath: =>
     @setState dead: true
     # TODO: call parent's onDie
     console.log 'ded'
 
+  opened: (row, column) ->
+    @state.opened.some (item) -> item[0] == row && item[1] == column
+
   render: ->
     {rows, columns} = @props
-    {dead, opened} = @state
-
-    console.log opened
+    {dead} = @state
 
     <div id="board">
       {[0...rows].map (row) =>
         <div key={row}>
           {[0...columns].map (column) =>
-            <Cell key={column} row={row} column={column} bomb={@bomb(row, column)} dead={dead} neighbors={@neighbors(row, column)} onOpen={@handleOpen} onDeath={@handleDeath} />
+            <Cell key={column} row={row} column={column} bomb={@bomb(row, column)} opened={@opened(row, column)} dead={dead} neighbors={@neighbors(row, column)} onOpen={@handleOpen} onDeath={@handleDeath} />
           }
         </div>
       }

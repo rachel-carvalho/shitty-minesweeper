@@ -12,8 +12,10 @@ export default class Cell extends Component
     onOpen(row, column)
 
   render: ->
-    {row, column, bomb, neighbors, dead} = @props
+    {row, column, bomb, neighbors, dead, opened} = @props
     {open} = @state
+
+    open = open || opened
 
     classes = []
     classes.push 'open' if (open || (dead && bomb))
