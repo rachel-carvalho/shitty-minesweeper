@@ -1,8 +1,15 @@
 import React, {Component, Fragment} from 'react'
+import Cell from './cell'
 
 export default class Board extends Component
   render: ->
     {rows, columns, bombs} = @props
-    <div>
-      board {rows} x {columns} with {bombs} bombs
+    <div id="board">
+      {[1..rows].map (row) ->
+        <div key={row}>
+          {[1..columns].map (column) ->
+            <Cell key={"#{row},#{column}"} row={row} column={column} />
+          }
+        </div>
+      }
     </div>

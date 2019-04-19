@@ -6,7 +6,7 @@ export default class Toolbar extends Component
 
     remaining = bombs - foundBombs
 
-    <div>
+    <div id="toolbar">
       <span>{remaining}</span>
       <button onClick={onRestart}>Restart</button>
       <button onClick={onFlagToggle}>
