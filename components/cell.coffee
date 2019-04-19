@@ -3,11 +3,12 @@ import React, {Component, Fragment} from 'react'
 export default class Cell extends Component
   constructor: (props) ->
     super(props)
-    @state = open: false, flagged: false
+    @initialState = open: false, flagged: false, exploded: false
+    @state = @initialState
 
   componentDidUpdate: (prevProps) =>
     return if prevProps.game == @props.game
-    @setState open: false, flagged: false
+    @setState @initialState
 
   handleClick: =>
     {dead, opened, flagging} = @props
@@ -33,21 +34,24 @@ export default class Cell extends Component
   open: ->
     {row, column, bomb, onDeath, onOpen} = @props
     @setState open: true
-    return onDeath(row, column) if bomb
+    if bomb
+      @setState exploded: true
+      return onDeath(row, column)
     onOpen(row, column)
 
   render: ->
     {row, column, bomb, neighbors, dead, opened} = @props
-    {open, flagged} = @state
+    {open, flagged, exploded} = @state
 
     open = open || opened
 
     classes = []
-    classes.push 'open' if (open || (dead && bomb))
+    classes.push 'open' if (open || exploded || (dead && bomb && !flagged))
     classes.push 'wrong-flag' if dead && flagged && !bomb
 
     <button onClick={@handleClick} className={classes}>
       {neighbors if open && neighbors}
-      {'💣' if (open || dead) && bomb}
+      {'💣' if (open || dead) && bomb && !exploded && !flagged}
       {'🚩' if flagged}
+      {'💥' if exploded}
     </button>

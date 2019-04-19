@@ -16,8 +16,12 @@ export default class Toolbar extends Component
     ms = new Date() - @props.startedAt
     @setState elapsed: Math.round(ms / 1000)
 
+  handleRestart: =>
+    @setState elapsed: 0
+    @props.onRestart()
+
   render: ->
-    {bombs, foundBombs, flagging, onFlagToggle, onRestart} = @props
+    {bombs, foundBombs, flagging, onFlagToggle} = @props
     {elapsed} = @state
 
     remaining = bombs - foundBombs
@@ -25,7 +29,7 @@ export default class Toolbar extends Component
     <div id="toolbar">
       <time>{elapsed.toString().padStart(3, 0)}</time>
       <span>{remaining}</span>
-      <button onClick={onRestart}>Restart</button>
+      <button onClick={@handleRestart}>Restart</button>
       <button onClick={onFlagToggle}>
         {if flagging then 'Bomb' else 'Flag'}
       </button>
