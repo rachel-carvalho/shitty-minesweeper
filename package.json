@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@zeit/next-stylus": "^1.0.1",
+    "array-flat-polyfill": "^1.0.1",
     "autoprefixer": "^9.4.10",
     "coffeescript": "^2.3.2",
     "next": "^8.0.3",
