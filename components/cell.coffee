@@ -7,9 +7,9 @@ export default class Cell extends Component
 
   handleClick: =>
     @setState open: true
-    {row, column, bomb, neighbors, onOpen, onDeath} = @props
+    {row, column, bomb, onOpen, onDeath} = @props
     return onDeath(row, column) if bomb
-    onOpen(row, column, neighbors)
+    onOpen(row, column)
 
   render: ->
     {row, column, bomb, neighbors, dead} = @props

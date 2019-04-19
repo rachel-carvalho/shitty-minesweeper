@@ -22,16 +22,16 @@ export default class Board extends Component
 
     bombLocations.sort (a, b) -> "#{a[0]}, #{a[1]}" - "#{b[0]}, #{b[1]}"
 
-    @setState {distributed: true, bombLocations}
+    bombLocations
 
-  bomb: (row, column) ->
-    {bombLocations} = @state
+  bomb: (row, column, state) ->
+    {bombLocations} = (state || @state)
     bombLocations.some (bomb) -> bomb[0] == row && bomb[1] == column
 
-  neighbors: (row, column) ->
-    return if @bomb(row, column)
+  neighbors: (row, column, state) ->
+    return if @bomb(row, column, state)
     @surrounding(row, column)
-      .filter (item) => @bomb(...item)
+      .filter (item) => @bomb(...item, state)
       .length
 
   surrounding: (row, column) ->
@@ -43,13 +43,22 @@ export default class Board extends Component
           .map (column) -> [row, column]
       .flat()
 
-  handleOpen: (row, column, neighbors) =>
-    @setState (state) ->
-      opened = state.opened.slice(0)
-      opened.push [row, column]
-      {opened}
-    @distribute(row, column) unless @state.distributed
-    # surrounding = @surrounding(row, column)
+  handleOpen: (row, column) =>
+    @setState (state) =>
+      newState = {}
+      newState.opened = @openAll([[row, column]], state)
+      unless state.distributed
+        newState.bombLocations = @distribute(row, column)
+        newState.distributed = true
+      surrounding = @surrounding(row, column)
+      neighbors = @neighbors(row, column, newState)
+      newState.opened = @openAll(surrounding, newState) unless neighbors
+      newState
+
+  openAll: (items, state) ->
+    opened = state.opened.slice(0)
+    items.forEach (item) -> opened.push item
+    opened
 
   handleDeath: =>
     @setState dead: true
@@ -60,7 +69,7 @@ export default class Board extends Component
     {rows, columns} = @props
     {dead, opened} = @state
 
-    # console.log opened
+    console.log opened
 
     <div id="board">
       {[0...rows].map (row) =>
