@@ -38,7 +38,7 @@ export default class Toolbar extends Component
           '🙂'
         }
       </button>
-      <button onClick={onFlagToggle}>{if flagging then '💣' else '🚩'}</button>
+      <button onClick={onFlagToggle}>{if flagging then '🚩' else '💣'}</button>
       <time>{elapsed.toString().padStart(3, 0)}</time>
       {if best
         <span id="best">Best: {best.elapsed}</span>
