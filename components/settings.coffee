@@ -16,7 +16,9 @@ export default class Settings extends Component
   handleSubmit: (e) =>
     e.preventDefault()
     {rows, columns} = @currentValues()
-    Router.push "/?rows=#{rows}&columns=#{columns}"
+    path = "/?rows=#{rows}&columns=#{columns}"
+
+    Router.push path, process.env.BACKEND_URL + path
 
   currentValues: ->
     {rows, columns} = @state
@@ -29,6 +31,8 @@ export default class Settings extends Component
     {rows, columns} = @currentValues()
     bombs = if rows && columns then Math.round(rows * columns * 0.18) else ''
 
+    root = "#{process.env.BACKEND_URL}/"
+
     <section id="settings">
       <h1>
         Settings
@@ -40,11 +44,11 @@ export default class Settings extends Component
           <legend>Board size</legend>
 
           <div className="field">
-            <label for="rows">Rows: </label>
+            <label htmlFor="rows">Rows: </label>
             <input id="rows" name="rows" type="number" value={rows} onChange={@handleRowsChange} />
           </div>
           <div className="field">
-            <label for="columns">Columns: </label>
+            <label htmlFor="columns">Columns: </label>
             <input id="columns" name="columns" type="number" value={columns} onChange={@handleColumnsChange} />
           </div>
           <div className="field">
@@ -52,7 +56,7 @@ export default class Settings extends Component
             <span>{bombs}</span>
           </div>
           <div className="actions">
-            <Link href="/"><a>Use defaults</a></Link>
+            <Link href="/" as={root}><a>Use defaults</a></Link>
             <button>Save</button>
           </div>
         </fieldset>
