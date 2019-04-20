@@ -4,8 +4,11 @@ import Board from '../components/board'
 import '../css/app.styl'
 
 export default class Home extends Component
-  @getInitialProps: ->
-    {}
+  @getInitialProps: ({query}) ->
+    rows = query?.rows || 15
+    columns = query?.columns || 15
+    bombs = Math.round(columns * rows * 0.18)
+    {rows, columns, bombs}
 
   constructor: ->
     super()
@@ -37,9 +40,7 @@ export default class Home extends Component
 
   render: ->
     {started, startedAt, endedAt, flagging, foundBombs, dead, won} = @state
-    rows = 15
-    columns = 10
-    bombs = 28
+    {rows, columns, bombs} = @props
 
     <Fragment>
       <Toolbar bombs={bombs} foundBombs={foundBombs} startedAt={startedAt} endedAt={endedAt} flagging={flagging} dead={dead} won={won} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
