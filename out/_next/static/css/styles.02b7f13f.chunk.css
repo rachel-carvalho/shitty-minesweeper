@@ -18,6 +18,8 @@ body {
       -ms-user-select: none;
           user-select: none;
   touch-action: manipulation;
+  background-color: #1b1b1d;
+  color: #ebeaee;
 }
 *,
 *::after,
@@ -38,9 +40,9 @@ button {
   font-size: inherit;
   line-height: inherit;
   border-radius: 0;
-  background-color: ButtonFace;
+  background-color: #c0c0c0;
   border: 2px solid;
-  border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
+  border-color: #ddd #888 #888 #ddd;
 }
 #toolbar {
   padding: 10px;

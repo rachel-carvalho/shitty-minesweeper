@@ -16,6 +16,8 @@ body
   line-height: 1
   user-select: none
   touch-action: manipulation
+  background-color: #1b1b1d
+  color: #ebeaee
 
 *
   &, &::after, &::before
@@ -35,9 +37,12 @@ button
   font-size: inherit
   line-height: inherit
   border-radius: 0
-  background-color: ButtonFace
+  $button-face = #c0c0c0
+  $button-highlight = #dddddd
+  $button-shadow = #888888
+  background-color: $button-face
   border: 2px solid
-  border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight
+  border-color: $button-highlight $button-shadow $button-shadow $button-highlight
 
 #toolbar
   padding: 10px
