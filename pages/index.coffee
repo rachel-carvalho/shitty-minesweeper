@@ -1,89 +1,28 @@
-import { Component, Fragment } from 'react'
-import Head from 'next/head'
-import Toolbar from '../components/toolbar'
-import Board from '../components/board'
-import '../css/app.styl'
+import { Component } from 'react'
+import Minesweeper from '../components/minesweeper'
 
 export default class Home extends Component
   @getInitialProps: ({query, req}) ->
     rows = query?.rows || 15
     columns = query?.columns || 10
-    bombs = Math.round(columns * rows * 0.18)
 
-    {rows, columns, bombs}
+    {rows, columns, defaultRows: !query?.rows, defaultColumns: !query?.columns}
 
-  constructor: ->
-    super()
-    @initialState = started: false, flagging: false, foundBombs: 0, dead: false, startedAt: null, endedAt: null, won: false, best: null
-    @state = {...@initialState}
+  parseSearch: ->
+    {defaultRows, defaultColumns} = @props
+    return @props if !global.location?.search || !(defaultRows || defaultColumns)
 
-  componentDidMount: ->
-    @setState best: @best()
+    pairs = location.search.substring(1).split('&')
+      .map (it) ->
+        [key, value] = it.split('=')
+        "#{key}": value
 
-  handleRestart: =>
-    @setState {...@initialState, best: @best()}
+    search = Object.assign(...pairs)
 
-  handleStart: (startedAt) =>
-    @setState {started: true, startedAt}
-
-  handleFlagToggle: =>
-    @setState (state) -> flagging: !state.flagging
-
-  handleFlagAdded: =>
-    @setState (state) ->
-      foundBombs: state.foundBombs + 1
-
-  handleFlagRemoved: =>
-    @setState (state) ->
-      foundBombs: state.foundBombs - 1
-
-  handleDeath: =>
-    @setState dead: true, endedAt: new Date()
-
-  storage: ->
-    global.localStorage || {}
-
-  handleWin: =>
-    endedAt = new Date()
-    @saveTime(endedAt)
-    @setState {won: true, endedAt, best: @best()}
-
-  saveTime: (endedAt) ->
-    {rows, columns} = @props
-    game = {startedAt: @state.startedAt, endedAt}
-    records = @records()
-    records["#{rows}_#{columns}"] ||= []
-    records["#{rows}_#{columns}"].push game
-    @storage().shittyMinesweeper = JSON.stringify records
-
-  records: ->
-    return {} unless @storage().shittyMinesweeper
-    records = JSON.parse(@storage().shittyMinesweeper)
-
-    for size, games of records
-      games.forEach (game) ->
-        game.startedAt = new Date(Date.parse(game.startedAt))
-        game.endedAt = new Date(Date.parse(game.endedAt))
-        ms = game.endedAt - game.startedAt
-        game.elapsed = Math.round(ms / 1000)
-
-      games.sort (a, b) -> a.elapsed - b.elapsed
-
-    records
-
-  best: ->
-    {rows, columns} = @props
-    (@records()["#{rows}_#{columns}"] || [])[0]
+    {...@props, ...search}
 
   render: ->
-    {started, startedAt, endedAt, flagging, foundBombs, dead, won, best} = @state
-    {rows, columns, bombs} = @props
+    {rows, columns} = @parseSearch()
+    bombs = Math.round(columns * rows * 0.18)
 
-    <Fragment>
-      <Head>
-        <title>Shitty Minesweeper</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <Toolbar bombs={bombs} foundBombs={foundBombs} startedAt={startedAt} endedAt={endedAt} flagging={flagging} dead={dead} won={won} best={best} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
-      <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} won={won} onFlagAdded={@handleFlagAdded} onStart={@handleStart} onFlagRemoved={@handleFlagRemoved} onDeath={@handleDeath} onWin={@handleWin} />
-    </Fragment>
+    <Minesweeper rows={rows} columns={columns} bombs={bombs} />
