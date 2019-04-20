@@ -1,0 +1,99 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #212529;
+  text-align: left;
+  font-family: sans-serif;
+  line-height: 1;
+}
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+#__next {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+button {
+  cursor: pointer;
+  -webkit-appearance: button;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  border-radius: 0;
+}
+#toolbar {
+  padding: 10px;
+  text-align: center;
+}
+#toolbar > * {
+  margin: 0 10px;
+  vertical-align: middle;
+}
+#toolbar time,
+#toolbar span {
+  font-family: monospace;
+}
+#toolbar button {
+  padding: 0.25em;
+  font-size: 32px;
+}
+#board button {
+  width: 30px;
+  height: 30px;
+  vertical-align: top;
+  position: relative;
+  padding: 0;
+}
+#board button.open {
+  border: 0;
+}
+#board button.neighbor {
+  font-weight: bold;
+}
+#board button.neighbor-1 {
+  color: #00f;
+}
+#board button.neighbor-2 {
+  color: #008000;
+}
+#board button.neighbor-3 {
+  color: #f00;
+}
+#board button.neighbor-4 {
+  color: #000080;
+}
+#board button.neighbor-5 {
+  color: #800080;
+}
+#board button.neighbor-6 {
+  color: #a52a2a;
+}
+#board button.neighbor-7 {
+  color: #66e;
+}
+#board button.neighbor-8 {
+  color: #000;
+}
+#board button.wrong-flag::before {
+  content: '\274C';
+  position: absolute;
+  font-size: 30px;
+  line-height: 1;
+  width: 30px;
+  height: 30px;
+  left: 0;
+  top: 0;
+}
+
