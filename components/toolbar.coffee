@@ -28,7 +28,7 @@ export default class Toolbar extends Component
     remaining = bombs - foundBombs
 
     <div id="toolbar">
-      <span>{remaining}</span>
+      <span>{remaining.toString().padStart(bombs.toString().length, 0)}</span>
       <button onClick={@handleRestart}>
         {if dead
           '😵'

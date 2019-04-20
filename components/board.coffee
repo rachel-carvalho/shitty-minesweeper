@@ -93,7 +93,7 @@ export default class Board extends Component
   handleFlag: (row, column, added) =>
     {onFlagAdded, onFlagRemoved} = @props
     @setState (state) ->
-      {flagged} = state
+      flagged = state.flagged.slice(0)
 
       if added
         flagged.push [row, column]
