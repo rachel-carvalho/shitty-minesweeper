@@ -58,6 +58,13 @@ button {
   padding: 0.25em;
   font-size: 32px;
 }
+#board {
+  overflow: auto;
+  max-width: 100%;
+}
+#board .row {
+  white-space: nowrap;
+}
 #board button {
   width: 30px;
   height: 30px;

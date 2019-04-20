@@ -138,7 +138,7 @@ export default class Board extends Component
 
     <div id="board">
       {[0...rows].map (row) =>
-        <div key={row}>
+        <div className="row" key={row}>
           {[0...columns].map (column) =>
             <Cell key={column} row={row} column={column} flagging={flagging} bomb={@bomb(row, column)}
               opened={@opened(row, column)} dead={dead} neighbors={@neighbors(row, column)} game={game}
