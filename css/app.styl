@@ -12,9 +12,11 @@ body
   text-align: left
   font-family: sans-serif
   line-height: 1
+  user-select: none
 
-*, ::after, ::before
-  box-sizing: border-box
+*
+  &, &::after, &::before
+    box-sizing: border-box
 
 #__next
   display: flex
@@ -25,12 +27,14 @@ body
 
 button
   cursor: pointer
-  -webkit-appearance: button
   margin: 0
   font-family: inherit
   font-size: inherit
   line-height: inherit
   border-radius: 0
+  background-color: ButtonFace
+  border: 2px solid
+  border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight
 
 #toolbar
   padding: 10px

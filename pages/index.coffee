@@ -1,4 +1,5 @@
 import { Component, Fragment } from 'react'
+import Head from 'next/head'
 import Toolbar from '../components/toolbar'
 import Board from '../components/board'
 import '../css/app.styl'
@@ -79,6 +80,10 @@ export default class Home extends Component
     {rows, columns, bombs} = @props
 
     <Fragment>
+      <Head>
+        <title>Shitty Minesweeper</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <Toolbar bombs={bombs} foundBombs={foundBombs} startedAt={startedAt} endedAt={endedAt} flagging={flagging} dead={dead} won={won} best={best} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
       <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} won={won} onFlagAdded={@handleFlagAdded} onStart={@handleStart} onFlagRemoved={@handleFlagRemoved} onDeath={@handleDeath} onWin={@handleWin} />
     </Fragment>
