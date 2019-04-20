@@ -1,4 +1,5 @@
 $bomb-size = 30px
+$body-color = #ebeaee
 
 html, body
   height: 100%
@@ -17,7 +18,12 @@ body
   user-select: none
   touch-action: manipulation
   background-color: #1b1b1d
-  color: #ebeaee
+
+body, a
+  color: $body-color
+
+input
+  font-size: 1rem
 
 *
   &, &::after, &::before
@@ -36,13 +42,49 @@ button
   font-family: inherit
   font-size: inherit
   line-height: inherit
-  border-radius: 0
-  $button-face = #c0c0c0
-  $button-highlight = #dddddd
-  $button-shadow = #888888
-  background-color: $button-face
-  border: 2px solid
-  border-color: $button-highlight $button-shadow $button-shadow $button-highlight
+
+#toolbar, #board
+  button
+    border-radius: 0
+    $button-face = #c0c0c0
+    $button-highlight = #dddddd
+    $button-shadow = #888888
+    background-color: $button-face
+    border: 2px solid
+    border-color: $button-highlight $button-shadow $button-shadow $button-highlight
+
+transparent-button()
+  background-color: transparent
+  border: 0
+  padding: 10px
+
+#view-settings
+  transparent-button()
+  position: absolute
+  top: 5px
+  right: 5px
+
+#settings
+  width: 100%
+  height: 100vh
+
+  .field, button, a
+    display: inline-block
+    margin-right: 1em
+
+  button, a
+    &:last-child
+      margin-right: 0
+
+  .close
+    transparent-button()
+    color: $body-color
+
+  #rows, #columns
+    width: 3em
+
+  .actions
+    margin-top: 1em
 
 #toolbar
   padding: 10px
