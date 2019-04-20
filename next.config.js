@@ -17,29 +17,6 @@ module.exports = withCoffeescript(
         ])
       ]
     },
-    exportPathMap(defaultPathMap) {
-      delete defaultPathMap['/book']
-      defaultPathMap['/books/0553560735'] = {page: '/book', query: {isbn: '0553560735'}}
-      return defaultPathMap
-    },
-    webpack(config, options) {
-      config.module.rules.push({
-        test: /\.(pug)$/,
-        exclude: /node_modules/,
-        loaders: [
-          options.defaultLoaders.babel,
-          {
-            loader: 'pug-as-jsx-loader',
-            options: {
-              resolveComponents: {
-                Head: 'next/head',
-                WithParams: '../components/with-params'
-              }
-            }
-          }
-        ],
-      })
-      return config
-    }
+    assetPrefix: process.env.NODE_ENV === 'production' ? '/shitty-minesweeper' : ''
   })
 )
