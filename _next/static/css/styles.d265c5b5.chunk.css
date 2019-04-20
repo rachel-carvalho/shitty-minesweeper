@@ -3,6 +3,8 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  position: fixed;
+  width: 100%;
 }
 body {
   font-size: 1rem;
@@ -11,10 +13,15 @@ body {
   text-align: left;
   font-family: sans-serif;
   line-height: 1;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  touch-action: manipulation;
 }
 *,
-::after,
-::before {
+*::after,
+*::before {
   box-sizing: border-box;
 }
 #__next {
@@ -26,12 +33,14 @@ body {
 }
 button {
   cursor: pointer;
-  -webkit-appearance: button;
   margin: 0;
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
   border-radius: 0;
+  background-color: ButtonFace;
+  border: 2px solid;
+  border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
 }
 #toolbar {
   padding: 10px;
