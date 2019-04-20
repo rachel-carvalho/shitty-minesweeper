@@ -19,7 +19,13 @@ body {
           user-select: none;
   touch-action: manipulation;
   background-color: #1b1b1d;
+}
+body,
+a {
   color: #ebeaee;
+}
+input {
+  font-size: 1rem;
 }
 *,
 *::after,
@@ -39,10 +45,48 @@ button {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+}
+#toolbar button,
+#board button {
   border-radius: 0;
   background-color: #c0c0c0;
   border: 2px solid;
   border-color: #ddd #888 #888 #ddd;
+}
+#view-settings {
+  background-color: transparent;
+  border: 0;
+  padding: 10px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+#settings {
+  width: 100%;
+  height: 100vh;
+}
+#settings .field,
+#settings button,
+#settings a {
+  display: inline-block;
+  margin-right: 1em;
+}
+#settings button:last-child,
+#settings a:last-child {
+  margin-right: 0;
+}
+#settings .close {
+  background-color: transparent;
+  border: 0;
+  padding: 10px;
+  color: #ebeaee;
+}
+#settings #rows,
+#settings #columns {
+  width: 3em;
+}
+#settings .actions {
+  margin-top: 1em;
 }
 #toolbar {
   padding: 10px;
@@ -63,6 +107,7 @@ button {
 #board {
   overflow: auto;
   max-width: 100%;
+  max-height: calc(100vh - 72px);
 }
 #board .row {
   white-space: nowrap;
