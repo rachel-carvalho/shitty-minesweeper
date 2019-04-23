@@ -5,7 +5,7 @@ import Router from 'next/router'
 export default class Settings extends Component
   constructor: (props) ->
     super(props)
-    @state = rows: null, columns: null
+    @state = rows: null, columns: null, bombs: null
 
   handleRowsChange: (e) =>
     @setState rows: e.target.value
@@ -13,23 +13,26 @@ export default class Settings extends Component
   handleColumnsChange: (e) =>
     @setState columns: e.target.value
 
+  handleBombsChange: (e) =>
+    @setState bombs: e.target.value
+
   handleSubmit: (e) =>
     e.preventDefault()
-    {rows, columns} = @currentValues()
-    path = "/?rows=#{rows}&columns=#{columns}"
+    {rows, columns, bombs} = @currentValues()
+    path = "/?rows=#{rows}&columns=#{columns}&bombs=#{bombs}"
 
     Router.push path, process.env.BACKEND_URL + path
 
   currentValues: ->
-    {rows, columns} = @state
+    {rows, columns, bombs} = @state
     rows ?= @props.rows
     columns ?= @props.columns
-    {rows, columns}
+    bombs ||= if rows && columns then Math.round(rows * columns * 0.18) else ''
+    {rows, columns, bombs}
 
   render: ->
     {onClose} = @props
-    {rows, columns} = @currentValues()
-    bombs = if rows && columns then Math.round(rows * columns * 0.18) else ''
+    {rows, columns, bombs} = @currentValues()
 
     root = "#{process.env.BACKEND_URL}/"
 
@@ -52,8 +55,8 @@ export default class Settings extends Component
             <input id="columns" name="columns" type="number" value={columns} onChange={@handleColumnsChange} />
           </div>
           <div className="field">
-            <label>Bombs: </label>
-            <span>{bombs}</span>
+            <label htmlFor="bombs">Bombs: </label>
+            <input id="bombs" name="bombs" type="number" value={bombs} onChange={@handleBombsChange} />
           </div>
           <div className="actions">
             <Link href="/" as={root}><a>Use defaults</a></Link>

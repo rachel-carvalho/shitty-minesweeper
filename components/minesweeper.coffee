@@ -43,11 +43,11 @@ export default class Minesweeper extends Component
     @setState {won: true, endedAt, best: @best()}
 
   saveTime: (endedAt) ->
-    {rows, columns} = @props
+    {rows, columns, bombs} = @props
     game = {startedAt: @state.startedAt, endedAt}
     records = @records()
-    records["#{rows}_#{columns}"] ||= []
-    records["#{rows}_#{columns}"].push game
+    records["#{rows}x#{columns}_#{bombs}"] ||= []
+    records["#{rows}x#{columns}_#{bombs}"].push game
     @storage().shittyMinesweeper = JSON.stringify records
 
   records: ->
@@ -66,8 +66,8 @@ export default class Minesweeper extends Component
     records
 
   best: ->
-    {rows, columns} = @props
-    (@records()["#{rows}_#{columns}"] || [])[0]
+    {rows, columns, bombs} = @props
+    (@records()["#{rows}x#{columns}_#{bombs}"] || [])[0]
 
   handleViewSettingsClick: =>
     @setState settings: true
