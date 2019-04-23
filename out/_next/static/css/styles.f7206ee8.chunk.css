@@ -82,7 +82,8 @@ button {
   color: #ebeaee;
 }
 #settings #rows,
-#settings #columns {
+#settings #columns,
+#settings #bombs {
   width: 3em;
 }
 #settings .actions {
