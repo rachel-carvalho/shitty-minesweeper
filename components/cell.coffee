@@ -12,7 +12,9 @@ export default class Cell extends Component
 
   handleClick: =>
     {dead, opened, flagging} = @props
+    {flagged} = @state
     return if dead
+    return if flagged && !flagging
 
     open = opened || @state.open
 
