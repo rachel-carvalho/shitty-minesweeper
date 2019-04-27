@@ -33,7 +33,9 @@ export default class Board extends Component
     all = [0...rows]
       .map (row) -> [0...columns].map (column) -> [row, column]
       .flat()
-      .filter (item) -> item[0] != row || item[1] != column
+      .filter (item) ->
+        [tileRow, tileColumn] = item
+        tileRow < (row - 1) || tileRow > (row + 1) || tileColumn < (column - 1) || tileColumn > (column + 1)
 
     bombLocations = []
 
