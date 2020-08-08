@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "start": "next",
-    "export-deploy": "rm -r .next out && next build && next export && touch out/.nojekyll",
+    "export-deploy": "rm -rf .next out && next build && next export && touch out/.nojekyll",
     "gh-pages": "git subtree push --prefix out origin gh-pages"
   },
   "author": "Rachel Carvalho <rachel.carvalho@gmail.com>",
