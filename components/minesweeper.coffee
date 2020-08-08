@@ -8,7 +8,7 @@ import '../css/app.styl'
 export default class Minesweeper extends Component
   constructor: ->
     super()
-    @initialState = started: false, flagging: false, foundBombs: 0, dead: false, startedAt: null, endedAt: null, won: false, best: null, settings: false
+    @initialState = started: false, flagging: false, foundBombs: 0, dead: false, startedAt: null, endedAt: null, won: false, best: null, settings: false, pressing: false
     @state = {...@initialState}
 
   componentDidMount: ->
@@ -76,8 +76,14 @@ export default class Minesweeper extends Component
   handleCloseSettings: =>
     @setState settings: false
 
+  handlePress: =>
+    @setState pressing: true
+
+  handleUnpress: =>
+    @setState pressing: false
+
   render: ->
-    {started, startedAt, endedAt, flagging, foundBombs, dead, won, best, settings} = @state
+    {started, startedAt, endedAt, flagging, foundBombs, dead, won, best, settings, pressing} = @state
     {rows, columns, bombs} = @props
 
     <Fragment>
@@ -90,8 +96,13 @@ export default class Minesweeper extends Component
       else
         <Fragment>
           <button id="view-settings" onClick={@handleViewSettingsClick}>⚙️</button>
-          <Toolbar bombs={bombs} foundBombs={foundBombs} startedAt={startedAt} endedAt={endedAt} flagging={flagging} dead={dead} won={won} best={best} onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
-          <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} won={won} onFlagAdded={@handleFlagAdded} onStart={@handleStart} onFlagRemoved={@handleFlagRemoved} onDeath={@handleDeath} onWin={@handleWin} />
+          <Toolbar bombs={bombs} foundBombs={foundBombs} startedAt={startedAt} endedAt={endedAt} flagging={flagging}
+            dead={dead} won={won} best={best} pressing={pressing}
+            onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
+          <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} won={won}
+            onStart={@handleStart} onFlagAdded={@handleFlagAdded} onFlagRemoved={@handleFlagRemoved}
+            onPress={@handlePress} onUnpress={@handleUnpress}
+            onDeath={@handleDeath} onWin={@handleWin} />
         </Fragment>
       }
     </Fragment>

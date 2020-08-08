@@ -3,7 +3,7 @@ import React, {Component, Fragment} from 'react'
 export default class Cell extends Component
   constructor: (props) ->
     super(props)
-    @initialState = open: false, flagged: false, exploded: false, pressed: false
+    @initialState = open: false, flagged: false, exploded: false
     @state = @initialState
 
   componentDidUpdate: (prevProps) =>
@@ -42,24 +42,21 @@ export default class Cell extends Component
     onOpen(row, column)
 
   handleMouseDown: =>
-    {row, column, opened, onMouseDownExpander} = @props
-    onMouseDownExpander(row, column) if opened || @state.open
-    @setState pressed: true
+    {row, column, opened, onPress} = @props
+    onPress(row, column, opened || @state.open)
 
   handleMouseUp: =>
-    {row, column, opened, onMouseUpExpander} = @props
-    onMouseUpExpander(row, column) if opened || @state.open
-    @setState pressed: false
+    {row, column, onUnpress} = @props
+    onUnpress(row, column)
 
   # touch start only needs to be bound so that mouse up and down also get triggered by touch events
   handleTouchStart: =>
 
   render: ->
-    {row, column, bomb, neighbors, dead, opened, beingPressed} = @props
-    {open, flagged, exploded, pressed} = @state
+    {row, column, bomb, neighbors, dead, opened, pressed} = @props
+    {open, flagged, exploded} = @state
 
     open = open || opened
-    pressed = pressed || beingPressed
 
     classes = []
     classes.push 'open' if (open || exploded || (dead && bomb && !flagged))

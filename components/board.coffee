@@ -6,7 +6,7 @@ export default class Board extends Component
   constructor: (props) ->
     super(props)
 
-    @initialState = distributed: false, bombLocations: [], dead: false, opened: [], flagged: [], beingPressed: [], game: ''
+    @initialState = distributed: false, bombLocations: [], dead: false, opened: [], flagged: [], pressed: [], game: ''
     @state = @initialState
     @recentlyOpened = []
     @couldHaveWon = false
@@ -117,8 +117,8 @@ export default class Board extends Component
   flagged: (row, column) ->
     @state.flagged.some (item) -> item[0] == row && item[1] == column
 
-  beingPressed: (row, column) ->
-    @state.beingPressed.some (item) -> item[0] == row && item[1] == column
+  pressed: (row, column) ->
+    @state.pressed.some (item) -> item[0] == row && item[1] == column
 
   unflagged: (row, column) ->
     surrounding = @surrounding(row, column)
@@ -134,16 +134,23 @@ export default class Board extends Component
         @handleOpen(...item)
         @couldHaveWon = true
 
-  handleMouseDownExpander: (row, column) =>
-    {unflagged} = @unflagged(row, column)
-    @setState (state) ->
-      return if state.beingPressed.some (item) -> item[0] == row && item[1] == column
-      beingPressed = state.beingPressed.slice(0)
-      beingPressed.push.apply(beingPressed, unflagged)
-      {beingPressed}
+  handlePress: (row, column, opened) =>
+    toPress = [[row, column]]
 
-  handleMouseUpExpander: (row, column) =>
-    @setState beingPressed: []
+    if opened
+      {unflagged} = @unflagged(row, column)
+      toPress = [...unflagged, ...toPress]
+
+    @setState (state) =>
+      return if state.pressed.some (item) -> item[0] == row && item[1] == column
+      pressed = state.pressed.slice(0)
+      pressed.push.apply(pressed, toPress)
+      @props.onPress()
+      {pressed}
+
+  handleUnpress: (row, column) =>
+    @setState pressed: []
+    @props.onUnpress()
 
   checkIfWon: ->
     return if @props.won || !@couldHaveWon
@@ -161,10 +168,10 @@ export default class Board extends Component
         <div className="row" key={row}>
           {[0...columns].map (column) =>
             <Cell key={column} row={row} column={column} flagging={flagging} bomb={@bomb(row, column)}
-              opened={@opened(row, column)} beingPressed={@beingPressed(row, column)}
+              opened={@opened(row, column)} pressed={@pressed(row, column)}
               dead={dead} neighbors={@neighbors(row, column)} game={game}
               onFlag={@handleFlag} onOpen={@handleOpen} onExpand={@handleExpand} onDeath={@handleDeath}
-              onMouseDownExpander={@handleMouseDownExpander} onMouseUpExpander={@handleMouseUpExpander} />
+              onPress={@handlePress} onUnpress={@handleUnpress} />
           }
         </div>
       }

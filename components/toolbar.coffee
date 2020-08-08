@@ -22,7 +22,7 @@ export default class Toolbar extends Component
     @props.onRestart()
 
   render: ->
-    {bombs, foundBombs, flagging, dead, won, best, onFlagToggle} = @props
+    {bombs, foundBombs, flagging, dead, won, best, onFlagToggle, pressing} = @props
     {elapsed} = @state
 
     remaining = bombs - foundBombs
@@ -34,6 +34,8 @@ export default class Toolbar extends Component
           '😵'
         else if won
           '😎'
+        else if pressing
+          '😮'
         else
           '🙂'
         }
