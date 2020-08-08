@@ -5,7 +5,15 @@ import Router from 'next/router'
 export default class Settings extends Component
   constructor: (props) ->
     super(props)
-    @state = rows: null, columns: null, bombs: null
+    @initialState = rows: null, columns: null, bombs: null
+    @state = @initialState
+
+  componentDidUpdate: (prevProps) ->
+    return if prevProps == @props
+    @setState @initialState
+
+  defaultBombs: ({rows, columns}) ->
+    Math.round(rows * columns * 0.18)
 
   handleRowsChange: (e) =>
     @setState rows: e.target.value
@@ -14,7 +22,9 @@ export default class Settings extends Component
     @setState columns: e.target.value
 
   handleBombsChange: (e) =>
-    @setState bombs: e.target.value
+    bombs = e.target.value
+    bombs = null if parseInt(bombs) == @defaultBombs(@currentRowsColumns())
+    @setState {bombs}
 
   handleSubmit: (e) =>
     e.preventDefault()
@@ -23,11 +33,20 @@ export default class Settings extends Component
 
     Router.push path, process.env.BACKEND_URL + path
 
-  currentValues: ->
-    {rows, columns, bombs} = @state
+  currentRowsColumns: ->
+    {rows, columns} = @state
     rows ?= @props.rows
     columns ?= @props.columns
-    bombs ||= if rows && columns then Math.round(rows * columns * 0.18) else ''
+    {rows, columns}
+
+  calculateBombs: (rows, columns) ->
+    return '' unless (rows && columns)
+    @defaultBombs({rows, columns})
+
+  currentValues: ->
+    {rows, columns} = @currentRowsColumns()
+    {bombs} = @state
+    bombs ||= @calculateBombs(rows, columns)
     {rows, columns, bombs}
 
   render: ->

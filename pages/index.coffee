@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import Minesweeper from '../components/minesweeper'
+import Router from 'next/router'
 
 export default class Home extends Component
   @getInitialProps: ({query, req}) ->
@@ -8,6 +9,10 @@ export default class Home extends Component
     bombs = query?.bombs
 
     {rows, columns, bombs}
+
+  constructor: ->
+    super()
+    Router.events.on 'routeChangeComplete', @handleRouteChangeComplete
 
   parseSearch: ->
     return @props unless global.location?.search
@@ -21,8 +26,11 @@ export default class Home extends Component
 
     {...@props, ...search}
 
+  handleRouteChangeComplete: (url) =>
+    @setState @parseSearch()
+
   render: ->
-    {rows, columns, bombs: customBombs} = @parseSearch()
+    {rows, columns, bombs: customBombs} = @state || @parseSearch()
     bombs = if customBombs then parseInt(customBombs) else Math.round(columns * rows * 0.18)
 
     <Minesweeper rows={rows} columns={columns} bombs={bombs} />
