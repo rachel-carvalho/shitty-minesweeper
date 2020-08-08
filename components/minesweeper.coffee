@@ -70,6 +70,7 @@ export default class Minesweeper extends Component
     (@records()["#{rows}x#{columns}_#{bombs}"] || [])[0]
 
   handleViewSettingsClick: =>
+    @handleRestart()
     @setState settings: true
 
   handleCloseSettings: =>
