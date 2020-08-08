@@ -5,13 +5,12 @@ export default class Home extends Component
   @getInitialProps: ({query, req}) ->
     rows = query?.rows || 15
     columns = query?.columns || 10
-    customBombs = query?.bombs
+    bombs = query?.bombs
 
-    {rows, columns, customBombs, defaultRows: !query?.rows, defaultColumns: !query?.columns}
+    {rows, columns, bombs}
 
   parseSearch: ->
-    {defaultRows, defaultColumns, customBombs} = @props
-    return @props if !global.location?.search || !(defaultRows || defaultColumns || customBombs)
+    return @props unless global.location?.search
 
     pairs = location.search.substring(1).split('&')
       .map (it) ->
@@ -23,7 +22,7 @@ export default class Home extends Component
     {...@props, ...search}
 
   render: ->
-    {rows, columns, customBombs} = @parseSearch()
+    {rows, columns, bombs: customBombs} = @parseSearch()
     bombs = if customBombs then parseInt(customBombs) else Math.round(columns * rows * 0.18)
 
     <Minesweeper rows={rows} columns={columns} bombs={bombs} />
