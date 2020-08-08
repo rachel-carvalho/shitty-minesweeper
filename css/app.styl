@@ -43,19 +43,20 @@ button
   font-size: inherit
   line-height: inherit
 
+$button-face = #c0c0c0
+$button-highlight = #dddddd
+$button-shadow = #888888
+
 #toolbar, #board
   button
     border-radius: 0
-    $button-face = #c0c0c0
-    $button-highlight = #dddddd
-    $button-shadow = #888888
     background-color: $button-face
     border: 2px solid
     border-color: $button-highlight $button-shadow $button-shadow $button-highlight
 
-    &:active, &.pressed
-      border-width: 1
-      border-color: $button-shadow $button-highlight $button-highlight $button-shadow
+#toolbar button:active, #board button.pressed
+  border-width: 1
+  border-color: $button-shadow $button-highlight $button-highlight $button-shadow
 
 transparent-button()
   background-color: transparent

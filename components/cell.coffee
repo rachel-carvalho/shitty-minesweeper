@@ -42,19 +42,24 @@ export default class Cell extends Component
     onOpen(row, column)
 
   handleMouseDown: =>
+    {row, column, opened, onMouseDownExpander} = @props
+    onMouseDownExpander(row, column) if opened || @state.open
     @setState pressed: true
 
   handleMouseUp: =>
+    {row, column, opened, onMouseUpExpander} = @props
+    onMouseUpExpander(row, column) if opened || @state.open
     @setState pressed: false
 
   # touch start only needs to be bound so that mouse up and down also get triggered by touch events
   handleTouchStart: =>
 
   render: ->
-    {row, column, bomb, neighbors, dead, opened} = @props
+    {row, column, bomb, neighbors, dead, opened, beingPressed} = @props
     {open, flagged, exploded, pressed} = @state
 
     open = open || opened
+    pressed = pressed || beingPressed
 
     classes = []
     classes.push 'open' if (open || exploded || (dead && bomb && !flagged))
