@@ -53,6 +53,10 @@ button
     border: 2px solid
     border-color: $button-highlight $button-shadow $button-shadow $button-highlight
 
+    &:active, &.pressed
+      border-width: 1
+      border-color: $button-shadow $button-highlight $button-highlight $button-shadow
+
 transparent-button()
   background-color: transparent
   border: 0

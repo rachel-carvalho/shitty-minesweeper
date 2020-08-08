@@ -3,7 +3,7 @@ import React, {Component, Fragment} from 'react'
 export default class Cell extends Component
   constructor: (props) ->
     super(props)
-    @initialState = open: false, flagged: false, exploded: false
+    @initialState = open: false, flagged: false, exploded: false, pressed: false
     @state = @initialState
 
   componentDidUpdate: (prevProps) =>
@@ -41,9 +41,18 @@ export default class Cell extends Component
       return onDeath(row, column)
     onOpen(row, column)
 
+  handleMouseDown: =>
+    @setState pressed: true
+
+  handleMouseUp: =>
+    @setState pressed: false
+
+  # touch start only needs to be bound so that mouse up and down also get triggered by touch events
+  handleTouchStart: =>
+
   render: ->
     {row, column, bomb, neighbors, dead, opened} = @props
-    {open, flagged, exploded} = @state
+    {open, flagged, exploded, pressed} = @state
 
     open = open || opened
 
@@ -52,8 +61,10 @@ export default class Cell extends Component
     classes.push 'wrong-flag' if dead && flagged && !bomb
     classes.push 'neighbor' if neighbors
     classes.push "neighbor-#{neighbors}" if neighbors
+    classes.push 'pressed' if pressed
 
-    <button disabled={dead} onClick={@handleClick} className={classes.join ' '}>
+    <button disabled={dead} className={classes.join ' '} onClick={@handleClick}
+      onMouseDown={@handleMouseDown} onMouseUp={@handleMouseUp} onMouseOut={@handleMouseUp} onTouchStart={@handleTouchStart}>
       {neighbors if open && neighbors}
       {'💣' if (open || dead) && bomb && !exploded && !flagged}
       {'🚩' if flagged}
