@@ -53,7 +53,7 @@ export default class Cell extends Component
     classes.push 'neighbor' if neighbors
     classes.push "neighbor-#{neighbors}" if neighbors
 
-    <button onClick={@handleClick} className={classes.join ' '}>
+    <button disabled={dead} onClick={@handleClick} className={classes.join ' '}>
       {neighbors if open && neighbors}
       {'💣' if (open || dead) && bomb && !exploded && !flagged}
       {'🚩' if flagged}
