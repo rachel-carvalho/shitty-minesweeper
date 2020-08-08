@@ -5,6 +5,7 @@ export default class Cell extends Component
     super(props)
     @initialState = open: false, flagged: false, exploded: false
     @state = @initialState
+    @button = React.createRef()
 
   componentDidUpdate: (prevProps) =>
     return if prevProps.game == @props.game
@@ -49,8 +50,23 @@ export default class Cell extends Component
     {row, column, onUnpress} = @props
     onUnpress(row, column)
 
-  # touch start only needs to be bound so that mouse up and down also get triggered by touch events
   handleTouchStart: =>
+    @handleMouseDown()
+
+  handleTouchEnd: =>
+    @handleMouseUp()
+
+  handleTouchMove: (e) =>
+    {pageX, pageY} = e.touches[0]
+    {top, bottom, left, right} = @button.current.getBoundingClientRect()
+
+    withinX = left < pageX && pageX < right
+    withinY = top < pageY && pageY < bottom
+
+    if withinX && withinY
+      @handleTouchStart()
+    else
+      @handleTouchEnd()
 
   render: ->
     {row, column, bomb, neighbors, dead, opened, pressed} = @props
@@ -65,8 +81,9 @@ export default class Cell extends Component
     classes.push "neighbor-#{neighbors}" if neighbors
     classes.push 'pressed' if pressed
 
-    <button disabled={dead} className={classes.join ' '} onClick={@handleClick}
-      onMouseDown={@handleMouseDown} onMouseUp={@handleMouseUp} onMouseOut={@handleMouseUp} onTouchStart={@handleTouchStart}>
+    <button ref={@button} disabled={dead} className={classes.join ' '} onClick={@handleClick}
+      onMouseDown={@handleMouseDown} onMouseUp={@handleMouseUp} onMouseOut={@handleMouseUp}
+      onTouchStart={@handleTouchStart} onTouchEnd={@handleTouchEnd} onTouchMove={@handleTouchMove}>
       {neighbors if open && neighbors}
       {'💣' if (open || dead) && bomb && !exploded && !flagged}
       {'🚩' if flagged}
