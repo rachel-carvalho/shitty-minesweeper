@@ -53,6 +53,11 @@ button {
   border: 2px solid;
   border-color: #ddd #888 #888 #ddd;
 }
+#toolbar button:active,
+#board button.pressed {
+  border-width: 1;
+  border-color: #888 #ddd #ddd #888;
+}
 #view-settings {
   background-color: transparent;
   border: 0;
@@ -120,34 +125,45 @@ button {
   position: relative;
   padding: 0;
 }
+#board button:disabled {
+  color: #000;
+}
 #board button.open {
   border: 0;
 }
 #board button.neighbor {
   font-weight: bold;
 }
-#board button.neighbor-1 {
+#board button.neighbor-1,
+#board button:disabled.neighbor-1 {
   color: #00f;
 }
-#board button.neighbor-2 {
+#board button.neighbor-2,
+#board button:disabled.neighbor-2 {
   color: #008000;
 }
-#board button.neighbor-3 {
+#board button.neighbor-3,
+#board button:disabled.neighbor-3 {
   color: #f00;
 }
-#board button.neighbor-4 {
+#board button.neighbor-4,
+#board button:disabled.neighbor-4 {
   color: #000080;
 }
-#board button.neighbor-5 {
+#board button.neighbor-5,
+#board button:disabled.neighbor-5 {
   color: #800080;
 }
-#board button.neighbor-6 {
+#board button.neighbor-6,
+#board button:disabled.neighbor-6 {
   color: #a52a2a;
 }
-#board button.neighbor-7 {
+#board button.neighbor-7,
+#board button:disabled.neighbor-7 {
   color: #66e;
 }
-#board button.neighbor-8 {
+#board button.neighbor-8,
+#board button:disabled.neighbor-8 {
   color: #000;
 }
 #board button.wrong-flag::before {
