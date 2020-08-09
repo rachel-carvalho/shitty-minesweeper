@@ -160,7 +160,7 @@ export default class Board extends Component
       @props.onWin()
 
   render: ->
-    {rows, columns, flagging} = @props
+    {rows, columns, flagging, won} = @props
     {dead, game} = @state
 
     <div id="board">
@@ -168,7 +168,7 @@ export default class Board extends Component
         <div className="row" key={row}>
           {[0...columns].map (column) =>
             <Cell key={column} row={row} column={column} flagging={flagging} bomb={@bomb(row, column)}
-              opened={@opened(row, column)} pressed={@pressed(row, column)}
+              opened={@opened(row, column)} pressed={@pressed(row, column)} won={won}
               dead={dead} neighbors={@neighbors(row, column)} game={game}
               onFlag={@handleFlag} onOpen={@handleOpen} onExpand={@handleExpand} onDeath={@handleDeath}
               onPress={@handlePress} onUnpress={@handleUnpress} />

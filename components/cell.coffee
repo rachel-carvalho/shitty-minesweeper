@@ -69,7 +69,7 @@ export default class Cell extends Component
       @handleTouchEnd()
 
   render: ->
-    {row, column, bomb, neighbors, dead, opened, pressed} = @props
+    {row, column, bomb, neighbors, dead, opened, pressed, won} = @props
     {open, flagged, exploded} = @state
 
     open = open || opened
@@ -81,7 +81,7 @@ export default class Cell extends Component
     classes.push "neighbor-#{neighbors}" if neighbors
     classes.push 'pressed' if pressed
 
-    <button ref={@button} disabled={dead} className={classes.join ' '} onClick={@handleClick}
+    <button ref={@button} disabled={dead || won} className={classes.join ' '} onClick={@handleClick}
       onMouseDown={@handleMouseDown} onMouseUp={@handleMouseUp} onMouseOut={@handleMouseUp}
       onTouchStart={@handleTouchStart} onTouchEnd={@handleTouchEnd} onTouchMove={@handleTouchMove}>
       {neighbors if open && neighbors}
