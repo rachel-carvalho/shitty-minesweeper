@@ -15,7 +15,7 @@
     "array-flat-polyfill": "^1.0.1",
     "autoprefixer": "^9.8.5",
     "coffeescript": "^2.5.1",
-    "next": "^9.5.1",
+    "next": "^9.5.4",
     "next-coffeescript": "^1.3.0",
     "nib": "^1.1.2",
     "postcss-css-variables": "^0.12.0",
