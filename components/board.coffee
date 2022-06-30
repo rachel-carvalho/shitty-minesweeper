@@ -6,12 +6,37 @@ export default class Board extends Component
   constructor: (props) ->
     super(props)
 
-    @initialState = distributed: false, bombLocations: [], dead: false, opened: [], flagged: [], pressed: [], game: ''
+    @initialState = distributed: false, bombLocations: [], dead: false, opened: [], flagged: [], pressed: [], exploded: [], game: null
     @state = @initialState
     @recentlyOpened = []
     @couldHaveWon = false
+    @loadedState = false
+    @previousBoardBeforeLoad = null
+
+  loadState: ->
+    previousState = try JSON.parse(@storage().currentGameBoard)
+    @loadedState = true
+    previousState.game = new Date(previousState.game) if previousState?.game
+
+    @previousBoardBeforeLoad = previousState if @props.beforeLoad
+
+    if @props.beforeLoad
+      previousState = null
+    previousState
+
+  componentDidMount: ->
+    @restoreState()
+
+  restoreState: (state) ->
+    stateToLoad = state || @loadState()
+
+    stateToLoad = null if JSON.stringify(stateToLoad?.game) != JSON.stringify(@props.game)
+
+    @setState {...(stateToLoad || @initialState)}
 
   componentDidUpdate: (prevProps) =>
+    return @restoreState(@previousBoardBeforeLoad) if prevProps.beforeLoad && !@props.beforeLoad
+
     return @reset() if prevProps.started && !@props.started
 
     if @firstOpening
@@ -107,8 +132,8 @@ export default class Board extends Component
 
       {flagged}
 
-  handleDeath: =>
-    @setState dead: true
+  handleDeath: (row, column) =>
+    @setState dead: true, exploded: [row, column]
     @props.onDeath()
 
   opened: (row, column) ->
@@ -119,6 +144,10 @@ export default class Board extends Component
 
   pressed: (row, column) ->
     @state.pressed.some (item) -> item[0] == row && item[1] == column
+
+  exploded: (row, column) ->
+    [eRow, eColumn] = @state.exploded
+    eRow == row && eColumn == column
 
   unflagged: (row, column) ->
     surrounding = @surrounding(row, column)
@@ -159,9 +188,14 @@ export default class Board extends Component
     if flaggedAll && openedAll
       @props.onWin()
 
+  storage: ->
+    global.localStorage || {}
+
   render: ->
     {rows, columns, flagging, won} = @props
     {dead, game} = @state
+
+    @storage().currentGameBoard = JSON.stringify(@state) if @loadedState
 
     <div id="board">
       {[0...rows].map (row) =>
@@ -169,6 +203,7 @@ export default class Board extends Component
           {[0...columns].map (column) =>
             <Cell key={column} row={row} column={column} flagging={flagging} bomb={@bomb(row, column)}
               opened={@opened(row, column)} pressed={@pressed(row, column)} won={won}
+              flagged={@flagged(row, column)} exploded={@exploded(row, column)}
               dead={dead} neighbors={@neighbors(row, column)} game={game}
               onFlag={@handleFlag} onOpen={@handleOpen} onExpand={@handleExpand} onDeath={@handleDeath}
               onPress={@handlePress} onUnpress={@handleUnpress} />

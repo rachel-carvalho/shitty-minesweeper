@@ -8,13 +8,27 @@ import '../css/app.styl'
 export default class Minesweeper extends Component
   constructor: ->
     super()
-    @initialState = started: false, flagging: false, foundBombs: 0, dead: false, startedAt: null, endedAt: null, won: false, best: null, settings: false, pressing: false
+    @initialState = beforeLoad: true, started: false, flagging: false, foundBombs: 0, dead: false, startedAt: null, endedAt: null, won: false, best: null, settings: false, pressing: false
+    @loadedState = false
     @state = {...@initialState}
 
+  loadState: ->
+    previousState = try JSON.parse(@storage().currentGame)
+    @loadedState = true
+    previousState.startedAt = new Date(previousState.startedAt) if previousState?.startedAt
+    previousState.endedAt = new Date(previousState.endedAt) if previousState?.endedAt
+
+    {rows, columns, bombs} = @props
+    if previousState && (previousState.rows != rows || previousState.columns != columns || previousState.bombs != bombs)
+      previousState = null
+
+    previousState || @initialState
+
   componentDidMount: ->
-    @setState best: @best()
+    @setState {...@loadState(), best: @best(), beforeLoad: false}
 
   handleRestart: =>
+    @resetState()
     @setState {...@initialState, best: @best()}
 
   handleStart: (startedAt) =>
@@ -82,9 +96,26 @@ export default class Minesweeper extends Component
   handleUnpress: =>
     @setState pressing: false
 
-  render: ->
-    {started, startedAt, endedAt, flagging, foundBombs, dead, won, best, settings, pressing} = @state
+  saveState: ->
+    return unless @loadedState
+    savedState = @loadState()
     {rows, columns, bombs} = @props
+    {sRows, sColumns, sBombs} = savedState
+
+    if !savedState || !sRows || (rows == sRows && columns == sColumns && bombs == sBombs)
+      @storage().currentGame = JSON.stringify({...@state, rows, columns, bombs})
+    else
+      @resetState()
+
+  resetState: ->
+    @storage().currentGame = null
+    @storage().currentGameBoard = null
+
+  render: ->
+    {started, startedAt, endedAt, flagging, foundBombs, dead, won, best, settings, pressing, beforeLoad} = @state
+    {rows, columns, bombs} = @props
+
+    @saveState()
 
     <Fragment>
       <Head>
@@ -100,6 +131,7 @@ export default class Minesweeper extends Component
             dead={dead} won={won} best={best} pressing={pressing}
             onRestart={@handleRestart} onFlagToggle={@handleFlagToggle} />
           <Board flagging={flagging} rows={rows} columns={columns} bombs={bombs} started={started} won={won}
+            game={startedAt} beforeLoad={beforeLoad}
             onStart={@handleStart} onFlagAdded={@handleFlagAdded} onFlagRemoved={@handleFlagRemoved}
             onPress={@handlePress} onUnpress={@handleUnpress}
             onDeath={@handleDeath} onWin={@handleWin} />
