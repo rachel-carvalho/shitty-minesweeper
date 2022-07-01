@@ -1,4 +1,3 @@
-import 'array-flat-polyfill'
 import React, {Component, Fragment} from 'react'
 import Cell from './cell'
 

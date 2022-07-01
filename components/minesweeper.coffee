@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Toolbar from '../components/toolbar'
 import Board from '../components/board'
 import Settings from '../components/settings'
-import '../css/app.styl'
 
 export default class Minesweeper extends Component
   constructor: ->
